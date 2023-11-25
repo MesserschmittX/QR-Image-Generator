@@ -23,7 +23,7 @@ class QRGenerator {
   int? _qrVersion;
 
   /// Generate and save QR Code
-  Future<String> generate({
+  Future generate({
     /// String [data] to be converted to QR Code.
     required String data,
 
@@ -82,14 +82,13 @@ class QRGenerator {
     _qrVersion = qrVersion;
 
     try {
-      await _makeImage();
-      return filePath;
+      return await _makeImage();
     } catch (e) {
       throw 'Generate Image Error';
     }
   }
 
-  Future<void> _makeImage() async {
+  Future _makeImage() async {
     late QrCode qr;
 
     if (_qrVersion == null) {
@@ -105,7 +104,7 @@ class QRGenerator {
 
     _imageData = _getModules(qrImage);
 
-    await _make();
+    return await _make();
   }
 
   Future _make() async {
@@ -141,6 +140,7 @@ class QRGenerator {
     }
     final png = img.encodePng(image);
     await File(_outputFilePath).writeAsBytes(png);
+    return png;
   }
 
   List<List<bool>> _addPadding() {
